@@ -11,13 +11,15 @@ app.use((req,rep,next)=>{
     rep.header("Access-Control-Allow-Headers","Accept")
     next()
 })
+
+app.use(express.static("public"))
 app.use(body.json())
 app.use(body.urlencoded({extended:true}))
 app.use(fileupload({}))
 app.use("/root", root)
 
-app.get("/",(i, o)=>{
-    o.end("OK")
+app.get("/",(ping, pong)=>{
+    pong.sendFile(`${__dirname}\\public\\index.html`)
 })
 
 app.post("/login",(req,resp)=>{
@@ -29,7 +31,6 @@ app.post("/login",(req,resp)=>{
         else{
             database.getProfils(1, (res=>{
                 res.map(e=>profils.push(menus(e.profil)))
-                console.log(profils)
                 resp.json({
                     user:{
                         id:data.id,
